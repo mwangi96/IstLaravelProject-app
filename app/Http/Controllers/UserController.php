@@ -5,29 +5,10 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Hash;
-// use Illuminate\Routing\Controllers\Middleware;
-// use Illuminate\Routing\Controllers\HasMiddleware;
 
 class UserController extends Controller
 {
     
-    // public function __construct()
-    // {
-    //     $this-> middleware('permission:view user', ['only' => ['index']]);
-    //     $this-> middleware('permission:create user', ['only' => ['create','store']]);
-    //     $this->middleware('permission:update user', ['only' => ['update','edit']]);
-    //     $this->middleware('permission:delete user', ['only' => ['destroy']]);
-    // }
-
-    // public static function middleware(): array 
-    // {
-    //     return [
-    //         new Middleware('permission:view user', only: ['index']),
-    //         new Middleware('permission:create user', only: ['create', 'store']),
-    //         new Middleware('permission:update user', only: ['update', 'edit']),
-    //         new Middleware('permission:delete user', only: ['destroy']),
-    //     ];
-    // }
     public function index()
     {
         $users = User::get();
