@@ -10,7 +10,7 @@ use App\Http\Controllers\UserController;
 
 
 
-// Route::group(['middleware' => ['role:super-admin|admin']], function() {
+Route::group(['middleware' => ['role:super-admin|admin']], function() {
 
     Route::resource('permissions', App\Http\Controllers\PermissionController::class);
     Route::get('permissions/{permissionId}/delete', [App\Http\Controllers\PermissionController::class, 'destroy']);
@@ -27,7 +27,7 @@ use App\Http\Controllers\UserController;
     // Route::resource('jobs', JobController::class);
 
 
-// });
+});
 
 Route::get('/', function () {
     return view('welcome');
