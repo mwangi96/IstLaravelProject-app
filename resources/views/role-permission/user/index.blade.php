@@ -1,11 +1,4 @@
 <x-app-layout>
-
-    <div class="container mx-auto mt-5">
-        <a href="{{ url('roles') }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mx-1">Roles</a>
-        <a href="{{ url('permissions') }}" class="bg-teal-500 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded mx-1">Permissions</a>
-        <a href="{{ url('users') }}" class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded mx-1">Users</a>
-    </div>
-
     <div class="container mx-auto p-4">
         <div class="overflow-hidden bg-white shadow sm:rounded-lg">
             @if (session('status'))
