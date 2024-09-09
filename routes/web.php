@@ -9,6 +9,8 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\PortfolioController;
 use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\ApplicationController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\AlumniProfileController;
 
 
@@ -39,6 +41,11 @@ Route::group(['middleware' => ['role:super-admin|admin|alumni']], function() {
     Route::get('/jobs/{id}/apply', [App\Http\Controllers\JobController::class, 'apply'])->name('jobs.apply');
     Route::post('/jobs/apply/{job}', [App\Http\Controllers\JobController::class, 'applyStore'])->name('jobs.applyStore');
 
+      //applications routes
+    Route::get('/applications', [App\Http\Controllers\ApplicationController::class, 'index'])->name('applications.index');
+    Route::get('/applications/review/{id}', [App\Http\Controllers\ApplicationController::class, 'review'])->name('application.review');
+    Route::get('/applications/approve/{id}', [App\Http\Controllers\ApplicationController::class, 'approve'])->name('application.approve');
+    Route::get('/applications/deny/{id}', [App\Http\Controllers\ApplicationController::class, 'deny'])->name('application.deny');
 
       // AlumniProfile Routes
     Route::resource('alumni_profiles', App\Http\Controllers\AlumniProfileController::class);
@@ -46,24 +53,26 @@ Route::group(['middleware' => ['role:super-admin|admin|alumni']], function() {
     Route::get('alumni_profiles/create', [App\Http\Controllers\AlumniProfileController::class, 'create'])->name('alumni_profiles.create');
     Route::post('alumni_profiles', [App\Http\Controllers\AlumniProfileController::class, 'store'])->name('alumni_profiles.store');
     Route::get('alumni_profiles/{id}', [App\Http\Controllers\AlumniProfileController::class, 'show'])->name('alumni_profiles.show');
-    // Route::get('/alumni_profiles/{id}', [App\Http\Controllers\AlumniProfileController::class, 'show'])->name('alumni_profiles.show');
     Route::get('alumni_profiles/{id}/edit', [App\Http\Controllers\AlumniProfileController::class, 'edit'])->name('alumni_profiles.edit');
     Route::put('alumni_profiles/{id}', [App\Http\Controllers\AlumniProfileController::class, 'update'])->name('alumni_profiles.update');
     Route::get('/alumni-profiles/{profile}/edit', [AlumniProfileController::class, 'edit'])->name('alumni-profiles.edit');
     Route::put('/alumni-profiles/{profile}', [AlumniProfileController::class, 'update'])->name('alumni-profiles.update');
     Route::delete('alumni_profiles/{id}', [App\Http\Controllers\AlumniProfileController::class, 'destroy'])->name('alumni_profiles.destroy');
 
-
+      //projects routes
     Route::resource('projects', App\Http\Controllers\ProjectController::class);
     Route::get('/projects/index', [App\Http\Controllers\ProjectController::class, 'index'])->name('projects.index');
     Route::get('projects/create', [App\Http\Controllers\ProjectController::class, 'create'])->name('projects.create');
     Route::post('projects', [App\Http\Controllers\ProjectController::class, 'store'])->name('projects.store');
 
+    //notifications route
+    Route::get('/notifications', [App\Http\Controllers\NotificationController::class, 'index'])->name('notifications.index');
+    Route::post('/notifications/{id}/mark-as-read', [App\Http\Controllers\NotificationController::class, 'markAsRead'])->name('notifications.markAsRead');
+
+
 });
 
 
-Route::get('/user/{userId}/portfolio', [PortfolioController::class, 'getUserPortfolio'])->name('portfolio.user');
-Route::get('/portfolio/{portfolioId}/user', [PortfolioController::class, 'getPortfolioUser'])->name('portfolio.owner');
 
 Route::get('/', function () {
     return view('welcome');

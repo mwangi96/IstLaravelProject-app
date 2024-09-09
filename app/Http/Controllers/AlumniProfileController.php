@@ -25,6 +25,16 @@ class AlumniProfileController extends Controller
         return view('profiles.show', compact('profiles'));
     }
 
+    public function edit($id)
+{
+    // Find the alumni profile by ID
+    $profiles = AlumniProfile::findOrFail($id);
+
+    // Return the edit view with the profile data
+    return view('alumni_profiles.edit', compact('profiles'));
+}
+
+
     public function store(Request $request)
 {
     $request->validate([
@@ -62,6 +72,12 @@ class AlumniProfileController extends Controller
 
      // Assign the authenticated user's ID to the user_id field
      $data['user_id'] = auth()->id();
+
+
+      // Convert comma-separated strings to arrays
+    $data['skills'] = $request->input('skills') ? explode(',', $request->input('skills')) : [];
+    $data['languages'] = $request->input('languages') ? explode(',', $request->input('languages')) : [];
+    $data['hobbies'] = $request->input('hobbies') ? explode(',', $request->input('hobbies')) : [];
  
 
     if ($request->hasFile('profile_pic')) {
@@ -70,6 +86,8 @@ class AlumniProfileController extends Controller
     }
 
     AlumniProfile::create($data);
+
+
 
     // return redirect()->route('alumni_profiles.index')->with('success', 'Profile created successfully.');
     return  redirect('/alumni_profiles')->with('success', 'Profile created successfully.');
@@ -104,7 +122,14 @@ public function update(Request $request, AlumniProfile $alumniProfile)
         'hobbies' => 'nullable|array',
     ]);
 
+    // Update logic
     $data = $request->all();
+
+
+    // Convert comma-separated strings to arrays
+    $data['skills'] = $request->input('skills') ? explode(',', $request->input('skills')) : [];
+    $data['languages'] = $request->input('languages') ? explode(',', $request->input('languages')) : [];
+    $data['hobbies'] = $request->input('hobbies') ? explode(',', $request->input('hobbies')) : [];
 
     if ($request->hasFile('profile_pic')) {
         if ($alumniProfile->profile_pic && Storage::disk('public')->exists($alumniProfile->profile_pic)) {
@@ -118,4 +143,11 @@ public function update(Request $request, AlumniProfile $alumniProfile)
 
     return redirect()->route('alumni_profiles.index')->with('success', 'Profile updated successfully.');
 }
+
+    public function showNotifications()
+    {
+        $notifications = auth()->user()->notifications;
+
+        return view('notifications.index', compact('notifications'));
+    }
 }

@@ -3,12 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Models\Job;
+use App\Models\User;
 use Illuminate\Http\Request;
-use App\Models\ApplicationForJob; 
+use App\Models\ApplicationsForJobs;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Permission\Models\Permission;
+// use App\Notifications\JobPostedNotification;
+use Illuminate\Support\Facades\Notification;
+use App\Notifications\JobAppliedNotification;
 use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Routing\Controllers\HasMiddleware;
 
@@ -24,20 +28,9 @@ class JobController extends Controller implements HasMiddleware
         ];
     }
 
-    // public function index()
-    // {
-    //     $jobs = Job::all();
-    //     return view('jobs.index', compact('jobs'));
-    // }
-    public function index(Request $request)
+    public function index()
     {
-        $query = Job::query();
-        
-        if ($request->has('search')) {
-            $query->where('title', 'like', "%{$request->search}%");
-        }
-    
-        $jobs = $query->paginate(10);
+        $jobs = Job::all();
         return view('jobs.index', compact('jobs'));
     }
 
@@ -57,7 +50,7 @@ class JobController extends Controller implements HasMiddleware
                 'salary' => 'nullable|numeric|min:0',
                 'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             ]);
-    
+
             $job = new Job();
             $job->title = $request->title;
             $job->description = $request->description;
@@ -70,9 +63,10 @@ class JobController extends Controller implements HasMiddleware
                 $job->image = $path;
             }
     
+    
             $job->save();
 
-            return redirect()->route('jobs.index')->with('success', 'Job created successfully.');
+                return redirect()->route('jobs.index')->with('success', 'Job created successfully.');
 
         } catch (\Exception $e) {
             Log::error('Failed to create job: ' . $e->getMessage());
@@ -118,7 +112,7 @@ class JobController extends Controller implements HasMiddleware
 
         $job->save();
 
-        return redirect()->route('jobs.index')->with('toast_success', 'Job updated successfully.');
+        return redirect()->route('jobs.show', $job->id)->with('success', 'Job updated successfully.');
     }
 
     public function destroy(Job $job)
@@ -131,86 +125,43 @@ class JobController extends Controller implements HasMiddleware
 
         return redirect()->route('jobs.index')->with('success', 'Job deleted successfully.');
     }
+
     public function apply($id)
     {
-        // Ensure you are using the correct namespace for the Job model
-        $job = Job::findOrFail($id); // Fetch the Job model using the provided ID
-    
-        return view('jobs.apply', compact('job')); // Pass the Job model to the view
+        $job = Job::findOrFail($id);
+        return view('jobs.apply', compact('job'));
     }
 
     public function applyStore(Request $request, Job $job)
     {
-        \Log::info('Job ID:', ['job_id' => $job->id]);
-
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255',
             'resume' => 'required|file|mimes:pdf,doc,docx|max:2048',
             'cover_letter' => 'required|string',
-            'skills' => 'nullable|array',
-            'skills.*' => 'exists:skills,id',
         ]);
 
         $resumePath = $request->file('resume')->store('resumes', 'public');
 
-        $application = ApplicationForJob::create([
+        $application = ApplicationsForJobs::create([
             'job_id' => $job->id,
-            'user_id' => Auth::user()->id,
+            'user_id' => Auth::id(),
             'name' => $request->name,
             'email' => $request->email,
             'resume' => $resumePath,
             'cover_letter' => $request->cover_letter,
         ]);
 
+        // if ($job->user) {
+        //     $job->user->notify(new JobAppliedNotification($application));
+        // }
 
-        return redirect()->route('jobs.index')->with('success', 'Application submitted successfully!');
-    }
+            // Get all admin users (assuming 'admin' is the role for administrators)
+            $admins = User::role('admin')->get();
 
-    public function applications()
-    {
-        $applications = ApplicationForJob::with('job')->get();
-        return view('jobs.applications', compact('applications'));
-    }
+            // Send notification to all admins
+            Notification::send($admins, new JobAppliedNotification($application));
 
-    public function review($applicationId)
-    {
-        $application = ApplicationForJob::findOrFail($applicationId);
-        $application->status = 'reviewed';
-        $application->save();
-    
-        return redirect('/applications')->with('status', 'Application reviewed and email sent.');
-    }
-    
-    public function approve($applicationId)
-    {
-        $application = ApplicationForJob::findOrFail($applicationId);
-
-        $application->status = 'approved';
-        $application->save();
-
-        if ($application->user) {
-            $application->user->notify(new ApplicationApproved($application));
-        } else {
-            return redirect('/applications')->with('error', 'User not found for this application.');
-        }
-
-        return redirect('/applications')->with('status', 'Application approved and user notified.');
-    }
-
-    public function deny($applicationId)
-    {
-        $application = ApplicationForJob::findOrFail($applicationId);
-
-        $application->status = 'denied';
-        $application->save();
-
-        if ($application->user) {
-            $application->user->notify(new ApplicationDenied($application));
-        } else {
-            return redirect('/applications')->with('error', 'User not found for this application.');
-        }
-
-        return redirect('/applications')->with('status', 'Application denied and user notified.');
+        return redirect()->route('applications.index')->with('success', 'Application submitted successfully!');
     }
 }

@@ -1,4 +1,6 @@
-<x-app-layout>
+@extends('layouts.app')
+
+@section('content')
     <div class="container mx-auto p-4">
         <div class="flex justify-center">
             <div class="w-full lg:w-1/2">
@@ -43,4 +45,4 @@
         </div>
     </div>
     
-</x-app-layout>
+    @endsection

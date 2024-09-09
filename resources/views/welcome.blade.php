@@ -1,50 +1,47 @@
-@extends('layouts.app')
-
-@section('content')
+<!DOCTYPE html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ config('app.name', 'Laravel') }}</title>
+    <!-- Styles -->
+    @vite('resources/css/app.css')
+</head>
+<body class="bg-black text-gray-200 antialiased">
     <!-- Main Content -->
-    <main class="flex-grow">
-        <div class="max-w-7xl mx-auto p-6 lg:p-8">
-            <!-- Job Portal Content -->
-            <div class="mt-16">
-                <h2 class="text-2xl font-semibold text-black dark:text-black mb-6">Welcome to Our Job Portal</h2>
-                <p class="text-blue-600 dark:text-blue-600 mb-4">
-                    Find your dream job or hire the perfect candidate. Our job portal connects talented professionals with top employers.
-                </p>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
-                    <div class="scale-100 p-6 bg-white dark:bg-gray-800/50 dark:bg-gradient-to-bl from-gray-700/50 via-transparent dark:ring-1 dark:ring-inset dark:ring-white/5 rounded-lg shadow-2xl shadow-gray-500/20 dark:shadow-none flex motion-safe:hover:scale-[1.01] transition-all duration-250 focus:outline focus:outline-2 focus:outline-red-500">
-                        <div>
-                            <h3 class="text-xl font-semibold text-red-600 dark:text-red">For Job Seekers</h3>
-                            <p class="mt-4 text-blue-800 dark:text-blue-800 text-sm leading-relaxed">
-                                Browse thousands of job listings, upload your resume, and apply with ease. Get noticed by top employers in your field.
-                            </p>
-                            <div class="mt-2">
-                                <a href="#" class="text-blue-500 hover:underline">Find a Job</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="scale-100 p-6 bg-white dark:bg-gray-800/50 dark:bg-gradient-to-bl from-gray-700/50 via-transparent dark:ring-1 dark:ring-inset dark:ring-white/5 rounded-lg shadow-2xl shadow-gray-500/20 dark:shadow-none flex motion-safe:hover:scale-[1.01] transition-all duration-250 focus:outline focus:outline-2 focus:outline-red-500">
-                        <div>
-                            <h3 class="text-xl font-semibold text-red-600 dark:text-red">For Employers</h3>
-                            <p class="mt-4 text-blue-800 dark:text-blue-800 text-sm leading-relaxed">
-                                Post job openings, search our candidate database, and find the perfect fit for your company. Streamline your hiring process with our tools.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <main class="relative flex items-center justify-center min-h-screen bg-black overflow-hidden">
+        <!-- Background Video -->
+        <video autoplay loop muted class="absolute top-0 left-0 w-full h-full object-cover opacity-60">
+            <source src="{{ asset('storage/videos/VID-20240729-WA0033.mp4') }}" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
 
-            <div class="flex justify-between space-x-4 p-4 mt-8">
-                <div class="border border-gray-300 rounded-lg p-4 flex-1">
-                    <h2 class="text-xl font-bold mb-4">Featured Jobs</h2>
-                    <!-- Featured jobs content goes here -->
-                    <a href="/featured-jobs" class="text-blue-500 hover:underline">See all featured jobs</a>
-                </div>
-                <div class="border border-gray-300 rounded-lg p-4 flex-1">
-                    <h2 class="text-xl font-bold mb-4">Jobs in Kenya</h2>
-                    <!-- Jobs in Kenya content goes here -->
-                    <a href="/jobs-in-kenya" class="text-blue-500 hover:underline">See all jobs in Kenya</a>
-                </div>
+        <!-- Overlay Content -->
+        <div class="relative z-10 text-center p-4 sm:p-8 md:p-12 lg:p-16 xl:p-20">
+            <!-- Logo -->
+            {{-- <div class="mb-6">
+                <img src="{{ asset('storage/images/image.png') }}" alt="IST Alumni Management System Logo" class="mx-auto mb-6 w-32 h-24 md:w-40 md:h-32">
+            </div> --}}
+            <!-- Title -->
+            <h2 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-400 mb-4 sm:mb-6">
+                IST ALUMNI MANAGEMENT SYSTEM
+            </h2>
+
+            <!-- Sign Up Information -->
+            <p class="text-base md:text-lg lg:text-xl text-gray-200 mb-6 sm:mb-8">
+                Sign up to join our community of alumni or log in if you already have an account.
+            </p>
+
+            <!-- Buttons -->
+            <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
+                <a href="{{ route('register') }}" class="bg-blue-600 text-white font-bold py-3 px-6 rounded-lg sm:py-3.5 sm:px-8 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-colors">
+                    Sign Up
+                </a>
+                <a href="{{ route('login') }}" class="bg-red-600 text-white font-bold py-3 px-6 rounded-lg sm:py-3.5 sm:px-8 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 transition-colors">
+                    Log In
+                </a>
             </div>
         </div>
     </main>
-@endsection
+</body>
+</html>

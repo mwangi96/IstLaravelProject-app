@@ -4,7 +4,7 @@
 <div class="bg-gray-100 py-8">
     @if($profiles->isEmpty())
     <!-- No Profile Found Section -->
-    <div class="bg-yellow-100 border border-yellow-300 text-yellow-700 p-6 rounded-lg mx-8">
+    <div class="bg-yellow-100 border border-yellow-300 text-yellow-700 p-6 rounded-lg mx-auto max-w-xl">
         <h2 class="font-semibold text-2xl mb-2">No Profile Found</h2>
         <p class="text-gray-700">It looks like you haven't created any profiles yet. Click the button below to create a profile and start showcasing your skills and experience.</p>
         <a href="{{ route('alumni_profiles.create') }}" class="mt-4 inline-block px-6 py-2 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600">
@@ -13,10 +13,10 @@
     </div>
     @endif
     
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 p-8">
+    <div class="container mx-auto px-4 lg:px-0">
         @foreach($profiles as $profile)
-        <div class="bg-white shadow-lg rounded-lg overflow-hidden">
-            <div class="p-6">
+        <div class="bg-white shadow-lg rounded-lg overflow-hidden mb-8 relative flex flex-col">
+            <div class="p-6 flex-grow">
                 <div class="md:flex">
                     <!-- Left Side: Profile Picture and About Me -->
                     <div class="md:w-1/2">
@@ -112,6 +112,20 @@
                         </div>
                     </div>
                 </div>
+            </div>
+            
+            <!-- Edit and Delete Icons -->
+            <div class="absolute top-4 right-4 flex space-x-3">
+                <a href="{{ route('alumni_profiles.edit', $profile->id) }}" class="text-blue-500 hover:text-red-500">
+                    <i class="fas fa-edit"></i>
+                </a>
+                <form action="{{ route('alumni_profiles.destroy', $profile->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this profile?');">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="text-red-500 hover:text-blue-500">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
+                </form>
             </div>
         </div>
         @endforeach

@@ -1,4 +1,6 @@
-<x-app-layout>
+@extends('layouts.app')
+
+@section('content')
     <div class="container mx-auto p-4">
         <div class="flex justify-center">
             <div class="w-full lg:w-1/2">
@@ -20,7 +22,7 @@
                             </div>
                             <div class="mb-4">
                                 <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
-                                <input type="text" name="email" readonly value="{{$user->email}}" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
+                                <input type="text" name="email" value="{{$user->email}}" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
                             </div>
                             <div class="mb-4">
                                 <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
@@ -48,4 +50,4 @@
     </div>
     
 
-</x-app-layout>
+    @endsection

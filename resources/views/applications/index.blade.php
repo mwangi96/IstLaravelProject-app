@@ -6,9 +6,10 @@
             <div class="bg-gray-50 px-6 py-4 border-b border-gray-200">
                 <div class="flex items-center justify-between">
                     <h4 class="text-2xl font-semibold text-gray-800">Job Applications</h4>
-                    <a href="{{ route('jobs.index') }}" class="bg-red-600 text-white px-5 py-2 rounded-lg hover:bg-red-700 transition duration-300">
+                    <a href ="{{ route('jobs.index') }}" class="bg-red-600 text-white px-5 py-2 rounded-lg hover:bg-red-700 transition duration-300">
                         Back to Jobs
                     </a>
+                    
                 </div>
             </div>
             <div class="px-6 py-4">
@@ -22,6 +23,11 @@
                                 <th class="px-6 py-3 bg-gray-50 text-left text-sm font-semibold text-gray-500 uppercase tracking-wider">Cover Letter</th>
                                 <th class="px-6 py-3 bg-gray-50 text-left text-sm font-semibold text-gray-500 uppercase tracking-wider">Resume</th>
                                 <th class="px-6 py-3 bg-gray-50 text-left text-sm font-semibold text-gray-500 uppercase tracking-wider">Status</th>
+                                <th
+                                @if(auth()->user()->hasRole('super-admin') || auth()->user()->hasRole('admin'))
+                                class="px-6 py-3 bg-gray-50 text-left text-sm font-semibold text-gray-500 uppercase tracking-wider">Actions</th>
+                                @endif
+                                </th>
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
@@ -40,27 +46,37 @@
                                         </a>
                                     </td>
                                     <td class="px-6 py-4 whitespace-no-wrap">
-                                        @if($application->status == 'pending')
-                                            <span class="bg-yellow-100 text-yellow-800 text-sm font-bold px-2.5 py-0.5 rounded">{{ __('Pending') }}</span>
-                                        @elseif($application->status == 'reviewed')
-                                            <span class="bg-blue-100 text-blue-800 text-sm font-bold px-2.5 py-0.5 rounded">{{ __('Reviewed') }}</span>
-                                        @elseif($application->status == 'approved')
-                                            <span class="bg-green-100 text-green-800 text-sm font-bold px-2.5 py-0.5 rounded">{{ __('Approved') }}</span>
-                                        @elseif($application->status == 'denied')
-                                            <span class="bg-red-100 text-red-800 text-sm font-bold px-2.5 py-0.5 rounded">{{ __('Denied') }}</span>
+                                        @if(auth()->user()->hasRole('super-admin') || auth()->user()->hasRole('admin'))
+                                            @if($application->status == 'approved')
+                                                <span class="text-green-500">{{ __('You approved the application') }}</span>
+                                            @elseif($application->status == 'denied')
+                                                <span class="text-red-500">{{ __('You denied the application') }}</span>
+                                            @else
+                                                <span>{{ __('The application is under review') }}</span>
+                                            @endif
                                         @endif
                                     </td>
                                     <td class="px-6 py-4 whitespace-no-wrap flex space-x-2">
-                                        <a href="{{ route('application.review', $application->id) }}">
-                                            <x-secondary-button>{{ __('Review') }}</x-secondary-button>
-                                        </a>
-                                        <a href="{{ route('application.approve', $application->id) }}">
-                                            <x-primary-button>{{ __('Approve') }}</x-primary-button>
-                                        </a>
-                                        <a href="{{ route('application.deny', $application->id) }}">
-                                            <x-danger-button>{{ __('Deny') }}</x-danger-button>
-                                        </a>
-                                    </td>
+                                        @if(auth()->user()->hasRole('super-admin') || auth()->user()->hasRole('admin'))
+                                            <a href="{{ route('application.review', $application->id) }}">
+                                                <x-secondary-button>{{ __('Review') }}</x-secondary-button>
+                                            </a>
+                                            <a href="{{ route('application.approve', $application->id) }}">
+                                                <x-primary-button>{{ __('Approve') }}</x-primary-button>
+                                            </a>
+                                            <a href="{{ route('application.deny', $application->id) }}">
+                                                <x-danger-button>{{ __('Deny') }}</x-danger-button>
+                                            </a>
+                                        @elseif(auth()->user()->hasRole('alumni'))
+                                            @if($application->status == 'approved')
+                                                <span class="text-green-500">{{ __('Application approved') }}</span>
+                                            @elseif($application->status == 'denied')
+                                                <span class="text-red-500">{{ __('Application denied') }}</span>
+                                            @else
+                                                <span>{{ __('Application in progress') }}</span>
+                                            @endif
+                                        @endif
+                                    </td>                                    
                                 </tr>
                             @endforeach
                         </tbody>
@@ -69,4 +85,4 @@
             </div>
         </div>
     </div>
-    @endsection
+@endsection
